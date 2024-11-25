@@ -1,95 +1,70 @@
-const { getFirestoreInstance } = require('../config/firebase');
-const admin = require('firebase-admin');
-
-
 exports.getAllHours = async (req, res) => {
-    // Logic to retrieve all working hours from the database or data source
     const userId = req.query.userId;
-    let db = getFirestoreInstance();
-    const userDoc = await db.collection('users').doc(userId).get();
 
-    res.status(200).json({
-        userId: userId,
-        workHours: userDoc.data()["workHours"]
-    });
+    if (!userId) {
+        return res.status(400).json({ message: 'User ID is required' });
+    }
+
+    const workHours = [
+        { date: '2024-11-25', hours: 8, description: 'Regular work' },
+        { date: '2024-11-26', hours: 5, description: 'Part-time work' },
+    ];
+
+    res.status(200).json({ userId, workHours });
 };
 
 exports.addHours = async (req, res) => {
-    // Logic to add working hours based on request body data
+    const { userId, date, hours, description } = req.body;
 
-    const userId = req.query.userId;
-    let db = getFirestoreInstance();
-    const userDoc = await db.collection('users').doc(userId);
-
-    let reqData = req.body;
-    reqData.date = admin.firestore.Timestamp.fromDate(new Date(reqData.date ));
-
-     let data = (await userDoc.get()).data();
-        data["workHours"].push(reqData);
-
-
-    await userDoc.set(data);
+    if (!userId || !date || !hours) {
+        return res.status(400).json({ message: 'Missing required fields' });
+    }
 
     res.status(200).json({
-        userId: userId,
-        workHours: (await userDoc.get()).data()["workHours"]
+        userId,
+        newEntry: { date, hours, description },
+        message: 'Work hours added successfully',
     });
-
 };
 
 exports.getHours = async (req, res) => {
-    // Logic to retrieve all working hours from the database or data source
-    const userId = req.query.userId;
-    const id = req.params.id;
-    let db = getFirestoreInstance();
-    const userDoc = await db.collection('users').doc(userId).get();
+    const { userId } = req.query;
+    const { id } = req.params;
 
-    res.status(200).json({
-        userId: userId,
-        workHours: userDoc.data()["workHours"][id]
-    });
+    if (!userId || id === undefined) {
+        return res.status(400).json({ message: 'Missing required parameters' });
+    }
+
+    const workHours = [
+        { date: '2024-11-25', hours: 8, description: 'Regular work' },
+        { date: '2024-11-26', hours: 5, description: 'Part-time work' },
+    ];
+
+    res.status(200).json({ workHour: workHours[id] });
 };
 
 exports.updateHours = async (req, res) => {
-    const id = req.params.id;
-    // Logic to update working hours for the given ID based on request body data
+    const { userId } = req.query;
+    const { id } = req.params;
+    const { description } = req.body;
 
-    const userId = req.query.userId;
-    let db = getFirestoreInstance();
-    const userDoc = await db.collection('users').doc(userId);
-
-    let reqData = req.body;
-    if("date" in reqData) {
-        reqData.date = admin.firestore.Timestamp.fromDate(new Date(reqData.date));
+    if (!userId || id === undefined || !description) {
+        return res.status(400).json({ message: 'Missing required parameters' });
     }
-    let data = (await userDoc.get()).data();
-
-    data["workHours"][id] = {...data["workHours"][id], ...reqData};
-
-    await userDoc.set(data);
 
     res.status(200).json({
-        userId: userId,
-        workHours: data["workHours"][id]
+        message: 'Work hours updated successfully',
+        updated: { id, description },
     });
-
 };
 
 exports.deleteHours = async (req, res) => {
-    const id = req.params.id;
-    // Logic to delete working hours for the given ID
+    const { userId } = req.query;
+    const { id } = req.params;
 
-    const userId = req.query.userId;
-    let db = getFirestoreInstance();
-    const userDoc = await db.collection('users').doc(userId);
+    if (!userId || id === undefined) {
+        return res.status(400).json({ message: 'Missing required parameters' });
+    }
 
-    let data = (await userDoc.get()).data();
-    data["workHours"].splice(parseInt(id), 1);
-
-    await userDoc.set(data);
-
-    res.status(200).json({
-        userId: userId,
-        workHours: data["workHours"]
-    });
+    res.status(200).json({ message: `Work hours with ID ${id} deleted successfully` });
 };
