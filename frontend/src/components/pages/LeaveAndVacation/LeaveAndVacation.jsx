@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../../context/Context';
 
-const mockLeaves = [
-  { type: "Vacation", startDate: "2023-08-01", endDate: "2023-08-10",leaveHours: 34 },
-  { type: "Vacation", startDate: "2023-09-15", endDate: "2023-09-18",leaveHours: 33 },
-  { type: "Vacation", startDate: "2023-12-20", endDate: "2023-12-25",leaveHours: 40 },
-];
+
 
 function LeaveAndVacation() {
   const { userId } = useAuth();
