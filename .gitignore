@@ -19,7 +19,6 @@ coverage/
 *.lcov
 
 # Ignore package lock files (if you prefer yarn or want to avoid locking dependencies)
-package-lock.json
 yarn.lock
 
 # Ignore IDE-specific files (e.g., VSCode)
