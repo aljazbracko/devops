@@ -57,7 +57,7 @@ describe('Header Component', () => {
   });
 
   it('should render the application title', () => {
-    // Preveri, ali se naslov aplikacije pravilno izriše
+    // tttPreveri, ali se naslov aplikacije pravilno izriše
     render(
       <Router>
         <Header role="user" setRole={mockSetRole} setIsAuthenticated={mockSetIsAuthenticated} />
