@@ -11,6 +11,8 @@ import LeaveAndVacation from './components/pages/LeaveAndVacation/LeaveAndVacati
 import Login from './auth/Login';
 import Register from './auth/Register';
 import { AuthProvider } from './context/Context';
+import Notification from './components/pages/Notification/Notification';
+
 
 function App() {
   const [role, setRole] = useState(null);
@@ -59,6 +61,12 @@ function App() {
                 path="/leaves"
                 element={isAuthenticated ? <LeaveAndVacation /> : <Navigate to="/login" />}
               />
+              <Route
+                path="/notifications"
+                element={isAuthenticated ? <Notification role={role} /> : <Navigate to="/login" />}
+              />
+
+
             </Routes>
           </div>
         </div>

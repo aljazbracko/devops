@@ -32,6 +32,10 @@ function Header({ role, setRole, setIsAuthenticated }) {
               </li>
             )}
             <li className="nav-item">
+              <Link className="nav-link text-dark" to="/notifications">Obvestila</Link>
+            </li>
+
+            <li className="nav-item">
               <Link className="nav-link text-dark" to="/workhours">Moje ure</Link>
             </li>
             <li className="nav-item">
