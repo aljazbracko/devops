@@ -19,7 +19,7 @@ describe('Notification Controller', () => {
         docs: [
           {
             id: '1',
-            data: () => ({ notification: 'Test Notification', date: '06.12.2024' }),
+            data: () => ({ name: 'Test Notification', description: 'Test Description', priority: 'srednja', date: '06.12.2024' }),
           },
         ],
       })),
@@ -27,21 +27,18 @@ describe('Notification Controller', () => {
     getFirestoreInstance.mockReturnValue(mockDb);
   });
 
-  // Test: Dodajanje novega obvestila
-  it('should add a new notification successfully', async () => {
-    const req = { body: { notification: 'New Notification' } }; // Podatki za zahtevo
+  // Test: Validacija vhodnih podatkov pri dodajanju obvestila
+  it('should return 400 if required fields are missing', async () => {
+    const req = { body: { name: '' } }; // Manjkajoči podatki
     const res = { status: jest.fn(() => res), json: jest.fn() }; // Mock odziv
 
     await addNotification(req, res);
 
-    // Preveri, da je bil poklican `add` z ustreznimi podatki
-    expect(mockDb.add).toHaveBeenCalledWith(expect.objectContaining({ notification: 'New Notification' }));
+    // Preveri, da je bil status 400 (slaba zahteva)
+    expect(res.status).toHaveBeenCalledWith(400);
 
-    // Preveri, da je bil status 201 (uspešno ustvarjeno)
-    expect(res.status).toHaveBeenCalledWith(201);
-
-    // Preveri, da je bil vrnjen uspešen JSON odgovor
-    expect(res.json).toHaveBeenCalled();
+    // Preveri, da je bil vrnjen ustrezen JSON odgovor
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ message: 'All fields (name, description, priority) are required' }));
   });
 
   // Test: Pridobivanje vseh obvestil
