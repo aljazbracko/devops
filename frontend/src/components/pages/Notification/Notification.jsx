@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react';
 
 function Notification({ role }) {
   const [notifications, setNotifications] = useState([]);
-  const [newNotification, setNewNotification] = useState({ text: '', priority: 'srednja' });
+  const [newNotification, setNewNotification] = useState({ name: '', description: '', priority: 'srednja' });
   const [filterPriority, setFilterPriority] = useState('vse');
+
+  const API_URL = process.env.REACT_APP_API_URL; // Osnova za API klice
 
   // Pridobi obvestila iz baze
   const fetchNotifications = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/notifications');
+      const response = await fetch(`${API_URL}/notifications`);
       if (!response.ok) {
         throw new Error('Napaka pri pridobivanju obvestil');
       }
@@ -28,7 +30,7 @@ function Notification({ role }) {
     }
 
     try {
-      const response = await fetch('http://localhost:3001/api/notifications', {
+      const response = await fetch(`${API_URL}/notifications`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -50,7 +52,6 @@ function Notification({ role }) {
     }
   };
 
-
   // Filtriraj obvestila po prioriteti
   const filteredNotifications = filterPriority === 'vse'
     ? notifications
@@ -59,7 +60,8 @@ function Notification({ role }) {
   // Naloži obvestila ob prvem prikazu komponente
   useEffect(() => {
     fetchNotifications();
-  }, []);
+  }, [fetchNotifications]);
+  
 
   return (
     <div className="container my-5">
@@ -154,7 +156,6 @@ function Notification({ role }) {
         </div>
       </div>
     </div>
-
   );
 }
 

@@ -12,8 +12,7 @@ function LeaveAndVacation() {
   const [sickLeave, setSickLeave] = useState([]);
 
   useEffect(() => {
-
-    fetch(`http://localhost:3001/api/sickAbsence?userId=${userId}`)
+    fetch(`${process.env.REACT_APP_API_URL}/sickAbsence?userId=${userId}`)
       .then((response) => {
         if (!response.ok) {
           return Promise.reject('Network response was not ok');
@@ -26,7 +25,6 @@ function LeaveAndVacation() {
       .catch((error) => {
         console.error('Error fetching sick leave data:', error);
       });
-
   }, [userId]);
 
   const handleSubmit = (e) => {
@@ -38,27 +36,26 @@ function LeaveAndVacation() {
       startDate: startDate
     };
 
-    if (leaveType === "Sick Leave") {
-
-      fetch('http://localhost:3001/api/sickAbsence', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newLeave),
+  if (leaveType === "Sick Leave") {
+    fetch(`${process.env.REACT_APP_API_URL}/sickAbsence`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(newLeave),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setSickLeave((prevSickLeave) => [...prevSickLeave, data.sickLeave]);
       })
-        .then((response) => response.json())
-        .then((data) => {
-          setSickLeave((prevSickLeave) => [...prevSickLeave, data.sickLeave]);
-        })
-        .catch((error) => {
-          console.error('Error adding new sick leave:', error);
-        });
+      .catch((error) => {
+        console.error('Error adding new sick leave:', error);
+      });
+  }
 
-    }
-    setStartDate("");
-    setEndDate("");
-  };
+  setStartDate("");
+  setEndDate("");
+};
 
   return (
     <div className="container mt-4">

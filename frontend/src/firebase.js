@@ -3,14 +3,14 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
 
-// Tvoja Firebase konfiguracija
+// Firebase konfiguracija iz .env datoteke
 const firebaseConfig = {
-  apiKey: "AIzaSyAN1-ETDEGlql0pEJBJqvdDtYpnVAeXpqs",
-  authDomain: "rirs-ac280.firebaseapp.com",
-  projectId: "rirs-ac280",
-  storageBucket: "rirs-ac280.appspot.com",
-  messagingSenderId: "619808482976",
-  appId: "1:619808482976:web:c331c9cef2e9bb69200bc5"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
 };
 
 // Inicializacija Firebase

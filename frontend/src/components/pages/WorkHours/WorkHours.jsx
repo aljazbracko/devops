@@ -16,7 +16,7 @@ function WorkHours() {
 
 
   useEffect(() => {
-    fetch(`http://localhost:3001/api/workHours?userId=${userId}`)
+    fetch(`${process.env.REACT_APP_API_URL}/workHours?userId=${userId}`)
       .then((response) => {
         if (!response.ok) {
           return Promise.reject('Network response was not ok');
@@ -48,7 +48,7 @@ function WorkHours() {
     };
 
 
-    fetch(`http://localhost:3001/api/workHours?userId=${userId}`, {
+    fetch(`${process.env.REACT_APP_API_URL}/workHours?userId=${userId}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -88,7 +88,7 @@ function WorkHours() {
     setWorkHours(updatedWorkHours);
 
     // Send updated data to backend with the index (or other identifier as needed)
-    fetch(`http://localhost:3001/api/workHours/${selectedIndex}?userId=${userId}`, {
+    fetch(`${process.env.REACT_APP_API_URL}/workHours/${selectedIndex}?userId=${userId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -108,7 +108,7 @@ function WorkHours() {
     setWorkHours(updatedWorkHours);
   
     // Send delete request to the backend
-    fetch(`http://localhost:3001/api/workHours/${index}?userId=${userId}`, {
+    fetch(`${process.env.REACT_APP_API_URL}/workHours/${index}?userId=${userId}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
