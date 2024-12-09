@@ -6,9 +6,13 @@ function Notification({ role }) {
   const [filterPriority, setFilterPriority] = useState('vse');
 
   const API_URL = process.env.REACT_APP_API_URL; // Osnova za API klice
+  console.log("Fetching from:", `${API_URL}/notifications`);
+
 
   // Pridobi obvestila iz baze (z uporabo useCallback)
   const fetchNotifications = useCallback(async () => {
+    console.log("Fetching notifications from:", `${API_URL}/notifications`);
+
     try {
       const response = await fetch(`${API_URL}/notifications`);
       if (!response.ok) {
