@@ -1,7 +1,7 @@
 # Ime pipeline-a za backend
 name: Backend CI
 
-# Dogodki, ki sprožijo workflow (push in pull request na glavno vejo)
+# Dogodki, ki sprožijo workflow (push, pull_request, workflow_dispatch)
 on:
   push:
     branches:
@@ -28,8 +28,8 @@ jobs:
     - name: Cache node_modules  # Caching odvisnosti
       uses: actions/cache@v3
       with:
-        path: backend/node_modules  # Pot do mape node_modules
-        key: ${{ runner.os }}-backend-${{ hashFiles('backend/package-lock.json') }}  # Ključ za cache
+        path: backend/node_modules
+        key: ${{ runner.os }}-backend-${{ hashFiles('backend/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-backend-
 
@@ -41,7 +41,7 @@ jobs:
     - name: Upload backend artifacts  # Naložitev artefaktov za backend
       uses: actions/upload-artifact@v4
       with:
-        name: backend-build  # Ime artefakta
+        name: backend-build
         path: |
           backend/  
           backend/node_modules/  
@@ -63,17 +63,17 @@ jobs:
     - name: Cache node_modules  # Caching odvisnosti
       uses: actions/cache@v3
       with:
-        path: backend/node_modules  # Pot do mape node_modules
-        key: ${{ runner.os }}-backend-${{ hashFiles('backend/package-lock.json') }}  # Ključ za cache
+        path: backend/node_modules
+        key: ${{ runner.os }}-backend-${{ hashFiles('backend/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-backend-
 
-    - name: Install dependencies  # Namestitev odvisnosti
+    - name: Install dependencies
       run: |
         cd backend
         npm install
 
-    - name: Run tests with coverage  
+    - name: Run tests with coverage  # Izvajanje testov
       run: |
         cd backend
         npm run test:ci
@@ -81,6 +81,28 @@ jobs:
     - name: Upload coverage report  # Naložitev poročila o pokritosti kode
       uses: actions/upload-artifact@v4
       with:
-        name: backend-coverage  # Ime artefakta
-        path: backend/coverage/  # Pot do poročila o pokritosti kode
-        
+        name: backend-coverage
+        path: backend/coverage/
+
+  # Job za gradnjo in nalaganje Docker slike za backend
+  dockerize-backend:
+    needs: test-backend  # Docker faza sledi testiranju
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build Docker image
+      run: |
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/backend:latest ./backend
+
+    - name: Push Docker image to Docker Hub
+      run: |
+        docker push ${{ secrets.DOCKER_USERNAME }}/backend:latest
