@@ -23,6 +23,11 @@ app.use('/api/sickAbsence', sickAbsenceRoutes);
 app.use('/api/vacationAbsence', vacationAbsenceRoutes);
 app.use('/api/notifications', notificationRoutes);
 
+// Add the root route here
+app.get('/', (req, res) => {
+  res.status(200).send('Backend is running!');
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
