@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 function Notification({ role }) {
   const [notifications, setNotifications] = useState([]);
@@ -7,8 +7,8 @@ function Notification({ role }) {
 
   const API_URL = process.env.REACT_APP_API_URL; // Osnova za API klice
 
-  // Pridobi obvestila iz baze
-  const fetchNotifications = async () => {
+  // Pridobi obvestila iz baze (z uporabo useCallback)
+  const fetchNotifications = useCallback(async () => {
     try {
       const response = await fetch(`${API_URL}/notifications`);
       if (!response.ok) {
@@ -19,7 +19,14 @@ function Notification({ role }) {
     } catch (error) {
       console.error('Napaka pri pridobivanju obvestil:', error);
     }
-  };
+  }, [API_URL]);
+
+  // Naloži obvestila ob prvem prikazu komponente
+  useEffect(() => {
+    fetchNotifications();
+  }, [fetchNotifications]);
+
+
 
   // Dodaj novo obvestilo
   const handleAddNotification = async (e) => {
