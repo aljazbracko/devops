@@ -12,16 +12,22 @@ const notificationRoutes = require('./src/routes/notificationRoutes');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-app.use(cors());
+app.use(
+  cors({
+    origin: ['https://devopsrirs.vercel.app'], 
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], 
+    allowedHeaders: ['Content-Type', 'Authorization'], 
+  })
+);
 app.use(express.json());
 
 initializeFirestore();
 
-app.use('/api/auth', authRoutes);
-app.use('/api/workHours', workHoursRoutes);
-app.use('/api/sickAbsence', sickAbsenceRoutes);
-app.use('/api/vacationAbsence', vacationAbsenceRoutes);
-app.use('/api/notifications', notificationRoutes);
+app.use('/auth', authRoutes);
+app.use('/workHours', workHoursRoutes);
+app.use('/sickAbsence', sickAbsenceRoutes);
+app.use('/vacationAbsence', vacationAbsenceRoutes);
+app.use('/notifications', notificationRoutes);
 
 // Add the root route here
 app.get('/', (req, res) => {
