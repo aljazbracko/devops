@@ -45,6 +45,13 @@ jobs:
         path: |
           backend/  
           backend/node_modules/  
+    
+    - name: Deploy Backend to Vercel  # Dodano za Vercel deploy
+      run: |
+        npm install -g vercel
+        cd backend
+        vercel deploy --prod --token ${{ secrets.VERCEL_TOKEN }}
+    
 
   # Job za testiranje backenda
   test-backend:
