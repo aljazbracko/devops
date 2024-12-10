@@ -53,9 +53,9 @@ jobs:
       run: |
           npm install -g vercel
           cd frontend
-          vercel deploy --prod --token ${{ secrets.VERCEL_TOKEN }}
+          vercel deploy --prod --yes --token ${{ secrets.VERCEL_TOKEN }}
 
-          
+
   # Job za testiranje frontenda
   test-frontend:
     needs: build-frontend  # Testiranje se izvede po uspešni gradnji

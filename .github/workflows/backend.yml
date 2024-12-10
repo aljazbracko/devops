@@ -50,7 +50,7 @@ jobs:
       run: |
         npm install -g vercel
         cd backend
-        vercel deploy --prod --token ${{ secrets.VERCEL_TOKEN }}
+        vercel deploy --prod --yes --token ${{ secrets.VERCEL_TOKEN }}
     
 
   # Job za testiranje backenda

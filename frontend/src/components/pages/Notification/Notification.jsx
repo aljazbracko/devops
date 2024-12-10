@@ -83,7 +83,7 @@ function Notification({ role }) {
           <div className="col-md-6">
             <form onSubmit={handleAddNotification} className="mb-4">
               <div className="mb-3">
-                <label htmlFor="nameInput" className="form-label">Ime obvestila.</label>
+                <label htmlFor="nameInput" className="form-label">Ime obvestila!!</label>
                 <input
                   id="nameInput"
                   type="text"
