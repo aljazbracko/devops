@@ -49,16 +49,6 @@ jobs:
         name: frontend-build
         path: frontend/build/
 
-    - name: Deploy Frontend to Vercel  # Dodano za Vercel deploy
-      run: |
-          npm install -g vercel
-          cd frontend
-          vercel deploy --prod --yes --token ${{ secrets.VERCEL_TOKEN }}
-      env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_FRONTEND_PROJECT_ID }}
-
-
   # Job za testiranje frontenda
   test-frontend:
     needs: build-frontend  # Testiranje se izvede po uspešni gradnji
@@ -119,3 +109,23 @@ jobs:
     - name: Push Docker image to Docker Hub
       run: |
         docker push ${{ secrets.DOCKER_USERNAME }}/frontend:latest
+
+  # Job za deployment frontenda
+  deploy-frontend:
+    needs: test-frontend  # Deploy sledi testiranju
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code  # Kloniranje repozitorija
+      uses: actions/checkout@v3
+
+    - name: Install Vercel CLI  # Namestitev Vercel CLI
+      run: npm install -g vercel
+
+    - name: Deploy Frontend to Vercel  # Deploy na Vercel
+      run: |
+        cd frontend
+        vercel deploy --prod --yes --token ${{ secrets.VERCEL_TOKEN }}
+      env:
+        VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+        VERCEL_PROJECT_ID: ${{ secrets.VERCEL_FRONTEND_PROJECT_ID }}

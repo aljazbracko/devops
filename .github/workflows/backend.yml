@@ -45,16 +45,6 @@ jobs:
         path: |
           backend/  
           backend/node_modules/  
-    
-    - name: Deploy Backend to Vercel  # Dodano za Vercel deploy
-      run: |
-        npm install -g vercel
-        cd backend
-        vercel deploy --prod --yes --token ${{ secrets.VERCEL_TOKEN }}
-      env:
-        VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-        VERCEL_PROJECT_ID: ${{ secrets.VERCEL_BACKEND_PROJECT_ID }}
-    
 
   # Job za testiranje backenda
   test-backend:
@@ -116,3 +106,23 @@ jobs:
     - name: Push Docker image to Docker Hub
       run: |
         docker push ${{ secrets.DOCKER_USERNAME }}/backend:latest
+
+  # Job za deployment backenda
+  deploy-backend:
+    needs: test-backend  # Deploy sledi testiranju
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code  # Kloniranje repozitorija
+      uses: actions/checkout@v3
+
+    - name: Install Vercel CLI  # Namestitev Vercel CLI
+      run: npm install -g vercel
+
+    - name: Deploy Backend to Vercel  # Deploy na Vercel
+      run: |
+        cd backend
+        vercel deploy --prod --yes --token ${{ secrets.VERCEL_TOKEN }}
+      env:
+        VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+        VERCEL_PROJECT_ID: ${{ secrets.VERCEL_BACKEND_PROJECT_ID }}
