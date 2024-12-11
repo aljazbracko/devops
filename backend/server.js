@@ -13,11 +13,7 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 app.use(
-  cors({
-    origin: ['https://devopsrirs.vercel.app'], 
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], 
-    allowedHeaders: ['Content-Type', 'Authorization'], 
-  })
+  cors()
 );
 app.use(express.json());
 
