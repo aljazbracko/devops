@@ -59,7 +59,7 @@ function LeaveAndVacation() {
 
   return (
     <div className="container mt-4">
-      <h2 className="mb-4">Dopust in Bolniška</h2>
+      <h2 className="mb-4">Dopust in Bolniška - test</h2>
 
       {/* Pregled dopustov in bolniških */}
       <table className="table table-striped mb-4">
