@@ -113,6 +113,53 @@ jobs:
           TAG=${{ github.ref == 'refs/heads/production' && 'prod' || 'dev' }}
           docker push ${{ secrets.DOCKER_USERNAME }}/frontend:$TAG
 
+
+# SonarCloud analiza za frontend
+sonarcloud-analysis-frontend:
+  needs: test-frontend
+  runs-on: ubuntu-latest
+  environment:
+    name: Development
+  if: github.ref == 'refs/heads/main'
+
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 20
+
+    - name: Setup Java 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    - name: Install dependencies
+      run: |
+        cd frontend
+        npm ci
+
+    - name: Run tests and collect coverage
+      run: |
+        cd frontend
+        npm run test:ci -- --coverage
+
+    - name: Run SonarCloud analysis
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      run: |
+        npx sonar-scanner \
+          -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY_FRONTEND }} \
+          -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION_KEY }} \
+          -Dsonar.sources=frontend \
+          -Dsonar.host.url=https://sonarcloud.io \
+          -Dsonar.javascript.lcov.reportPaths=frontend/coverage/lcov.info
+
+
+
   # Job za deployment frontenda na Vercel
   deploy-frontend:
     needs: dockerize-frontend
