@@ -1,7 +1,7 @@
 # Ime pipeline-a za frontend
 name: Frontend CI
 
-# Dogodki, ki sprožijo workflow (push, pull_request, workflow_dispatch)
+# Dogodki, ki sprožijo workflow
 on:
   push:
     branches:
@@ -103,25 +103,15 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build Docker image (Development)
-        if: github.ref != 'refs/heads/production'
+      - name: Build Docker image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/frontend:dev ./frontend
+          TAG=${{ github.ref == 'refs/heads/production' && 'prod' || 'dev' }}
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/frontend:$TAG ./frontend
 
-      - name: Build Docker image (Production)
-        if: github.ref == 'refs/heads/production'
+      - name: Push Docker image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/frontend:prod ./frontend
-
-      - name: Push Docker image (Development)
-        if: github.ref != 'refs/heads/production'
-        run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/frontend:dev
-
-      - name: Push Docker image (Production)
-        if: github.ref == 'refs/heads/production'
-        run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/frontend:prod
+          TAG=${{ github.ref == 'refs/heads/production' && 'prod' || 'dev' }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/frontend:$TAG
 
   # Job za deployment frontenda na Vercel
   deploy-frontend:
