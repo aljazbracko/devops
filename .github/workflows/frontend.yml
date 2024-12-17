@@ -129,3 +129,20 @@ jobs:
       env:
         VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
         VERCEL_PROJECT_ID: ${{ secrets.VERCEL_FRONTEND_PROJECT_ID }}
+
+
+  # Job za uvedbo na GitHub Pages
+  deploy-pages:
+    needs: test-frontend  # Deploy se izvede po uspešnem testiranju
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs  # Pot do mape z vašo GitHub Pages vsebino
